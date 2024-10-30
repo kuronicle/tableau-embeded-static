@@ -48,12 +48,15 @@
         </li>
     </ul>
     <button type="button" id="embed_dashboard">ダッシュボード埋め込み</button>
+
+    <script type="module" src="https://embedding.tableauusercontent.com/tableau.embedding.3.1.0.min.js"></script>
     <tableau-viz id="tableauViz"
         src=""
         token=""/>
 
     <script>
-        //document.querySelector('form').addEventListener('submit', function (event) {
+
+        // JWT生成ボタン押下時にJWTを生成する
         document.getElementById('jwtGenerateForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
@@ -67,7 +70,6 @@
 
             const secret = document.getElementById('secret_value').value;
 
-            // JWTを生成する関数を定義
             function generateJWT(payload, secret) {
                 const header = {
                     "alg": "HS256",
@@ -94,9 +96,17 @@
             }
 
             const token = generateJWT(payload, secret);
-
-            //ocument.getElementById('generated_jwt').textContent = `JWT: ${token}`;
             document.getElementById('generated_jwt').value = token;
+        });
+
+        // 埋め込みボタン押下時にダッシュボードを表示する
+        document.getElementById('embed_dashboard').addEventListener('click', function(event) {
+            const dashborardUrl = document.getElementById('dashboard_url').value;
+            const jwt = document.getElementById('generated_jwt').value;
+
+            const tableauViz = document.getElementById('tableauViz');
+            tableauViz.token = jwt;
+            tableauViz.src = dashborardUrl;
         });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
